@@ -3,8 +3,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -15,11 +18,11 @@ public class Publication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String content;
     private String cover;
     private String description;
-    private LocalDate publishedDate;
     private int like;
 
 
@@ -37,5 +40,21 @@ public class Publication {
             joinColumns = @JoinColumn(name = "publication_id"),
             inverseJoinColumns = @JoinColumn(name = "document_id")
     )
-    private List<Document>documentList;
+    private List<Document> documentList;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "modified_at", nullable = false)
+    private LocalDateTime modifiedAt;
+
+    public void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void setModifiedAt() {
+        this.modifiedAt = LocalDateTime.now();
+    }
 }
