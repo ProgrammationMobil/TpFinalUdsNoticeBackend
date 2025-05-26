@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class CustomExceptionHandler {
+
     @ExceptionHandler(PublicationNotFoundException.class)
     public ResponseEntity<ApiError> handlePublicationExceptionNotFound (PublicationNotFoundException e){
         ApiError apierror = new ApiError();
