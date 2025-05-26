@@ -46,6 +46,7 @@ public class PublicationController {
         Optional<Publication> publication = publicationRepository.findById(id);
 
         if (publication.isPresent()){
+
             Publication existedpubli = publication.get();
             existedpubli.setContent(publidetails.getContent());
             existedpubli.setTitle(publidetails.getTitle());
