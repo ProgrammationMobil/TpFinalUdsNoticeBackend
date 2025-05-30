@@ -1,5 +1,6 @@
 package com.UDSNotice.BackendUdsNotice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -20,9 +21,10 @@ public class Notification {
 
 
     @OneToOne
-    @JoinColumn(name = "pulication_id")
+    @JoinColumn(name = "publication_id")
     private Publication publication;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "notification_user",

@@ -1,13 +1,19 @@
 package com.UDSNotice.BackendUdsNotice.models;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Getter
@@ -25,21 +31,25 @@ public class Publication {
     private int like;
 
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
 
-    @OneToOne(mappedBy = "publication")
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "notification_id")
     private Notification notification;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "publication_document",
             joinColumns = @JoinColumn(name = "publication_id"),
             inverseJoinColumns = @JoinColumn(name = "document_id")
     )
-    private List<Document> documentList;
+    private Set<Document> documentList = new HashSet<>();
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -56,4 +66,5 @@ public class Publication {
     public void setModifiedAt() {
         this.modifiedAt = LocalDateTime.now();
     }
+
 }
