@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Getter
@@ -19,5 +20,9 @@ public class Document {
     private String url;
 
     @ManyToMany(mappedBy = "documentList")
-    private List<Publication> publicationList;
+    private Set<Publication> publicationList = new HashSet<>();
+
+    public void addPublication (Publication publication) {
+        this.getPublicationList().add(publication);
+    }
 }
