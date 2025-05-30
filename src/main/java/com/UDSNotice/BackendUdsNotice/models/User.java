@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="users")
@@ -23,8 +24,9 @@ public class User {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(mappedBy = "user")
-    private List<Publication> publicationList;
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private Set<Publication> publicationList;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
