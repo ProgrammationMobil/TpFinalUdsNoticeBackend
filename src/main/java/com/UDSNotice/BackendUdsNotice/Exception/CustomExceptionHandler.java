@@ -20,6 +20,26 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(apierror, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UserNotFound.class)
+    public ResponseEntity<ApiError> handleException (UserNotFound e){
+        ApiError apierror = new ApiError();
+        apierror.setMessage(e.getMessage());
+        apierror.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        apierror.setTimestamp(LocalDateTime.now());
+
+        return new ResponseEntity<>(apierror, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NotificationNotFound.class)
+    public ResponseEntity<ApiError> handleException (NotificationNotFound e){
+        ApiError apierror = new ApiError();
+        apierror.setMessage(e.getMessage());
+        apierror.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        apierror.setTimestamp(LocalDateTime.now());
+
+        return new ResponseEntity<>(apierror, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleException (Exception e){
         ApiError apierror = new ApiError();
@@ -29,4 +49,6 @@ public class CustomExceptionHandler {
 
     return new ResponseEntity<>(apierror, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 }
