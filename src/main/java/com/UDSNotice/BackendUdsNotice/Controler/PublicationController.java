@@ -1,77 +1,57 @@
 package com.UDSNotice.BackendUdsNotice.Controler;
 
+import com.UDSNotice.BackendUdsNotice.DTO.PublicationRequest;
 import com.UDSNotice.BackendUdsNotice.Exception.PublicationNotFoundException;
+import com.UDSNotice.BackendUdsNotice.Services.PublicationService;
 import com.UDSNotice.BackendUdsNotice.models.Publication;
-import com.UDSNotice.BackendUdsNotice.Repository.PublicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/publications")
 public class PublicationController {
 
     @Autowired
-    final PublicationRepository publicationRepository;
+    final PublicationService publicationService;
 
-    public PublicationController(PublicationRepository publicationRepository) {
-        this.publicationRepository = publicationRepository;
+    public PublicationController(PublicationService publicationService) {
+        this.publicationService = publicationService;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Publication>> getAllPublication () {
-        return new ResponseEntity<>(publicationRepository.findAll(), HttpStatus.OK);
+    @GetMapping
+    public List<Publication> getAllPublication () {
+        return publicationService.recuptout();
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<Publication> createPublication (@RequestBody Publication publication) {
-        publication.setCreatedAt();
-        publication.setModifiedAt();
-        Publication publicreated = publicationRepository.save(publication);
+    @PostMapping
+    public ResponseEntity<Publication> createPublication (@RequestBody PublicationRequest publicationRequest) {
+        Publication publicreated = publicationService.creerPublication(publicationRequest);
         return new ResponseEntity<>(publicreated, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Publication> getPublicationById (@PathVariable Long id){
-        Optional<Publication> publication = publicationRepository.findById(id);
-        return publication.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseThrow(() -> new PublicationNotFoundException("Publication Not Found"));
+        return publicationService.recupparid(id).map(ResponseEntity::ok).orElseThrow(()-> new PublicationNotFoundException("Publication Not Found"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Publication> updatePublic (@PathVariable Long id, @RequestBody Publication publidetails) {
-        Optional<Publication> publication = publicationRepository.findById(id);
-
-        if (publication.isPresent()){
-
-            Publication existedpubli = publication.get();
-            existedpubli.setContent(publidetails.getContent());
-            existedpubli.setTitle(publidetails.getTitle());
-            existedpubli.setCover(publidetails.getCover());
-            existedpubli.setDescription(publidetails.getDescription());
-            existedpubli.setLike(publidetails.getLike());
-            existedpubli.setUser(publidetails.getUser());
-            existedpubli.setNotification(publidetails.getNotification());
-            existedpubli.setDocumentList(publidetails.getDocumentList());
-            existedpubli.setModifiedAt();
-
-            Publication updatepubli = publicationRepository.save(existedpubli);
-            return new ResponseEntity<>(updatepubli, HttpStatus.OK);
+    public ResponseEntity<Publication> updatePublic (@PathVariable Long id, @RequestBody PublicationRequest publidetails) {
+        try {
+            return ResponseEntity.ok(publicationService.mettreajour(id, publidetails));
+        } catch (PublicationNotFoundException e) {
+            throw new PublicationNotFoundException("Publication non trouvee");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        throw new PublicationNotFoundException("Publication Not Found");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletepubli (@PathVariable Long id){
-        Optional<Publication> publication = publicationRepository.findById(id);
-
-        if (publication.isPresent()){
-            publicationRepository.delete(publication.get());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        throw new PublicationNotFoundException("Publication Not Found");
+        publicationService.supprimerpubli(id);
+        return ResponseEntity.noContent().build();
     }
 }
