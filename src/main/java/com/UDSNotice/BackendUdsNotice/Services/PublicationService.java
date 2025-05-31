@@ -89,7 +89,6 @@ public class PublicationService {
         publication.setCover(publicationRequest.cover);
         publication.setDescription(publicationRequest.description);
         publication.setLike(publicationRequest.like);
-        publication.setNotification(notification);
 
         publication.setDocumentList(publicationRequest.documentSet
                 .stream()

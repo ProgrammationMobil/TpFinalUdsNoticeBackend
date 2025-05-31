@@ -19,7 +19,7 @@ public class Document {
     private String title;
     private String url;
 
-    @ManyToMany(mappedBy = "documentList")
+    @ManyToMany(mappedBy = "documentList",fetch = FetchType.LAZY)
     private Set<Publication> publicationList = new HashSet<>();
 
     public void addPublication (Publication publication) {
